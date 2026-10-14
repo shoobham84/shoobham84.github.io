@@ -624,9 +624,14 @@
                         <span class="link-meta">in/shubham-nayak-46bba7379</span>
                     </li>
                     <li>
-                        <span class="tree-branch">└─</span>
+                        <span class="tree-branch">├─</span>
                         <a class="man-link" href="https://x.com/shoobam84" target="_blank" rel="noreferrer noopener">x(1)</a>
                         <span class="link-meta">x.com/shoobam84</span>
+                    </li>
+                    <li>
+                        <span class="tree-branch">└─</span>
+                        <a class="man-link" href="mailto:shubhamnayak392reborn@gmail.com">mail(1)</a>
+                        <span class="link-meta">shubhamnayak392reborn@gmail.com</span>
                     </li>
                 </ul>
             </div>
@@ -818,7 +823,11 @@
                 'realtek': { url: 'https://lore.kernel.org/all/87tsqkwdue.wl-tiwai@suse.de/T/#t', label: 'lore.kernel.org (Linux Kernel ALSA patch)' },
                 'driver': { url: 'https://lore.kernel.org/all/87tsqkwdue.wl-tiwai@suse.de/T/#t', label: 'lore.kernel.org (Linux Kernel ALSA patch)' },
                 'patch': { url: 'https://lore.kernel.org/all/87tsqkwdue.wl-tiwai@suse.de/T/#t', label: 'lore.kernel.org (Linux Kernel ALSA patch)' },
+                'patches': { url: 'https://lore.kernel.org/all/87tsqkwdue.wl-tiwai@suse.de/T/#t', label: 'lore.kernel.org (Linux Kernel ALSA patch)' },
                 'led': { url: 'https://lore.kernel.org/all/87tsqkwdue.wl-tiwai@suse.de/T/#t', label: 'lore.kernel.org (Linux Kernel ALSA patch)' },
+                'mail': { url: 'mailto:shubhamnayak392reborn@gmail.com', label: 'shubhamnayak392reborn@gmail.com' },
+                'email': { url: 'mailto:shubhamnayak392reborn@gmail.com', label: 'shubhamnayak392reborn@gmail.com' },
+                'gmail': { url: 'mailto:shubhamnayak392reborn@gmail.com', label: 'shubhamnayak392reborn@gmail.com' },
                 'arpa': { url: 'http://shoobham84.6.2.8.0.6.3.0.0.0.7.4.0.1.0.0.2.ip6.arpa', label: 'shoobham84...ip6.arpa' }
             };
 
@@ -841,12 +850,12 @@
                 }
 
                 if (lower === 'ls' || lower === 'dir' || lower === 'tree') {
-                    cmdFeedback.textContent = 'name  tty  description/  notes/  contributions/  see-also/';
+                    cmdFeedback.textContent = 'name  synopsis  description/  notes/  contributions/  see-also/';
                     return;
                 }
 
                 if (lower === 'ls see-also' || lower === 'ls seealso' || lower === 'ls links' || lower === 'ls ~/links') {
-                    cmdFeedback.textContent = 'github(1)  linkedin(1)  x(1)';
+                    cmdFeedback.textContent = 'github(1)  linkedin(1)  x(1)  mail(1)';
                     return;
                 }
 
@@ -903,7 +912,7 @@
                     }
 
                     if (normCat === 'seealso' || normCat === 'links' || normCat === 'socials') {
-                        cmdFeedback.innerHTML = 'see-also: <a href="https://github.com/shoobham84" target="_blank" rel="noreferrer noopener">github(1)</a> | <a href="https://www.linkedin.com/in/shubham-nayak-46bba7379/" target="_blank" rel="noreferrer noopener">linkedin(1)</a> | <a href="https://x.com/shoobam84" target="_blank" rel="noreferrer noopener">x(1)</a>';
+                        cmdFeedback.innerHTML = 'see-also: <a href="https://github.com/shoobham84" target="_blank" rel="noreferrer noopener">github(1)</a> | <a href="https://www.linkedin.com/in/shubham-nayak-46bba7379/" target="_blank" rel="noreferrer noopener">linkedin(1)</a> | <a href="https://x.com/shoobam84" target="_blank" rel="noreferrer noopener">x(1)</a> | <a href="mailto:shubhamnayak392reborn@gmail.com">mail(1)</a>';
                         return;
                     }
 
