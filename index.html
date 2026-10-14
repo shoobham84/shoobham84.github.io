@@ -5,372 +5,438 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="referrer" content="no-referrer">
     <meta name="robots" content="noindex, nofollow">
-    <title>Shubham Nayak</title>
+    <title>SHUBHAM(1) — Shubham Nayak</title>
     <style>
+        :root {
+            --bg: #070807;
+            --fg: #d8ddd7;
+            --fg-bright: #f2f5f1;
+            --muted: #7c857b;
+            --dim: #464d45;
+            --rule: #1d221d;
+            --accent: #528a64;
+            --accent-bg: rgba(82, 138, 100, 0.12);
+            --highlight-bg: rgba(82, 138, 100, 0.18);
+            --mono: "JetBrains Mono", "Cascadia Code", "Fira Code", "SF Mono", "Consolas", "Liberation Mono", monospace;
+
+            /* 9-stop dusky slate-green luminance ramp for the faint background cobra (@ = shadow, . = highlight) */
+            --l0: #070908;
+            --l1: #0a0d0b;
+            --l2: #0f1410;
+            --l3: #151c17;
+            --l4: #1b241e;
+            --l5: #232d26;
+            --l6: #2b372f;
+            --l7: #344339;
+            --l8: #3f5145;
+
+            /* Cursor reveal coordinates & radius */
+            --mx: 50vw;
+            --my: 42vh;
+            --spot-radius: 230px;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
-            font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
-            background: #0a0a0c;
-            color: #d4d4d8;
+            font-family: var(--mono);
+            background-color: var(--bg);
+            color: var(--fg);
             min-height: 100vh;
             display: flex;
             justify-content: center;
-            padding: 4rem 1rem 2rem;
-            line-height: 1.6;
+            padding: 3rem 1.25rem 4rem;
+            line-height: 1.65;
+            font-size: 0.9rem;
             position: relative;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* noise grain overlay */
-        body::before {
-            content: "";
-            position: fixed;
-            inset: 0;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-            pointer-events: none;
-            z-index: 9999;
-        }
-
-        .container {
-            max-width: 560px;
-            width: 100%;
-            position: relative;
-            z-index: 2;
-        }
-
-        /* ── Faint cobra ASCII background ── */
+        /* ── Background-Only Cobra ASCII with Cursor Spotlight Mask ── */
         .cobra-bg {
             position: fixed;
             inset: 0;
             pointer-events: none;
             user-select: none;
             z-index: 1;
-            opacity: 0.09;
+            opacity: 0.2;
             display: flex;
             justify-content: center;
-            align-items: flex-start;
-            padding-bottom: 60vh;
+            align-items: center;
             overflow: hidden;
-            mask-image: radial-gradient(ellipse 100% 100% at 50% 50%, black 30%, transparent 70%);
-            -webkit-mask-image: radial-gradient(ellipse 100% 100% at 50% 50%, black 30%, transparent 70%);
+            /* Only visible within the cursor's glow radius */
+            mask-image: radial-gradient(
+                circle var(--spot-radius) at var(--mx) var(--my),
+                rgba(0, 0, 0, 0.75) 0%,
+                rgba(0, 0, 0, 0.35) 45%,
+                rgba(0, 0, 0, 0.08) 75%,
+                transparent 100%
+            );
+            -webkit-mask-image: radial-gradient(
+                circle var(--spot-radius) at var(--mx) var(--my),
+                rgba(0, 0, 0, 0.75) 0%,
+                rgba(0, 0, 0, 0.35) 45%,
+                rgba(0, 0, 0, 0.08) 75%,
+                transparent 100%
+            );
+        }
+
+        /* Faint ambient cursor halo with reduced voltage */
+        .cursor-glow {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background: radial-gradient(
+                circle var(--spot-radius) at var(--mx) var(--my),
+                rgba(82, 138, 100, 0.012) 0%,
+                rgba(82, 138, 100, 0.003) 50%,
+                transparent 100%
+            );
         }
 
         .cobra-bg pre {
-            font-family: "Cascadia Code", "Fira Code", "SF Mono", "Consolas", monospace;
-            font-size: clamp(8px, 1.05vw, 16px);
-            line-height: 1.2;
-            color: #2bf062;
-            text-shadow: 0 0 12px rgba(43, 240, 98, 0.35);
-            letter-spacing: 0;
+            font-family: var(--mono);
+            font-size: clamp(8px, 1.25vh, 13px);
+            line-height: 1.12;
+            letter-spacing: 0.05em;
             margin: 0;
             white-space: pre;
         }
 
-        @property --border-angle {
-            syntax: '<angle>';
-            initial-value: 0deg;
-            inherits: false;
-        }
+        /* Luminance classes for the cobra ASCII characters */
+        .c0 { color: var(--l0); }
+        .c1 { color: var(--l1); }
+        .c2 { color: var(--l2); }
+        .c3 { color: var(--l3); }
+        .c4 { color: var(--l4); }
+        .c5 { color: var(--l5); }
+        .c6 { color: var(--l6); }
+        .c7 { color: var(--l7); }
+        .c8 { color: var(--l8); }
 
-        /* ── Keycap base — shared between intro & cards ── */
-        .intro, .card {
-            border: 1px solid #222228;
-            border-bottom: 1px solid #18181c;
-            border-radius: 12px;
-            background: linear-gradient(180deg, rgba(21, 21, 24, 0.55) 0%, rgba(17, 17, 20, 0.65) 100%);
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
+        /* ── Main UNIX Man-Page Container ── */
+        .man-page {
+            max-width: 660px;
+            width: 100%;
             position: relative;
-            /* thick bottom "wall" = the keycap 3D trick */
-            box-shadow:
-                0 4px 0 0 #0a0a0d,
-                0 6px 4px -1px rgba(0,0,0,0.5),
-                inset 0 1px 0 rgba(255,255,255,0.03);
-            transition: transform 0.15s cubic-bezier(.22,.68,0,1.1),
-                        box-shadow 0.15s ease;
-        }
-
-        /* ── Serpent border trace ── */
-        .tilt::before {
-            content: "";
-            position: absolute;
-            inset: -1px;
-            border-radius: 13px;
-            padding: 1px;
-            background: conic-gradient(
-                from var(--border-angle),
-                transparent 0%,
-                transparent 30%,
-                rgba(120,80,255,0.35) 47%,
-                rgba(160,255,160,0.5) 50%,
-                rgba(120,80,255,0.35) 53%,
-                transparent 70%,
-                transparent 100%
-            );
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            mask-composite: exclude;
-            animation: borderTrace 5s linear infinite;
-            z-index: 1;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.4s ease;
-        }
-
-        .tilt:hover::before {
-            opacity: 1;
-        }
-
-        @keyframes borderTrace {
-            to { --border-angle: 360deg; }
-        }
-
-        /* hover — keycap floats up, wall grows */
-        .intro:hover, .card:hover {
-            transform: translateY(-2px);
-            box-shadow:
-                0 6px 0 0 #0a0a0d,
-                0 10px 8px -2px rgba(0,0,0,0.55),
-                inset 0 1px 0 rgba(255,255,255,0.04);
-        }
-
-        /* click — bottoming out the switch */
-        .intro:active, .card:active {
-            transform: translateY(2px);
-            box-shadow:
-                0 1px 0 0 #0a0a0d,
-                0 2px 2px rgba(0,0,0,0.4),
-                inset 0 1px 0 rgba(255,255,255,0.02);
-            transition-duration: 0.06s;
-        }
-
-        /* ── Intro specifics ── */
-        .intro {
-            padding: 2.2rem 2rem;
-            margin-bottom: 1.8rem;
-        }
-
-        .intro::after {
-            content: "";
-            position: absolute;
-            width: 220px;
-            height: 220px;
-            background: radial-gradient(circle, rgba(120,80,255,0.08) 0%, transparent 70%);
-            top: -60px;
-            right: -40px;
-            pointer-events: none;
-        }
-
-        .intro h1 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #f0f0f0;
-            margin-bottom: 0.3rem;
-            letter-spacing: -0.02em;
-        }
-
-        .intro p {
-            color: #777;
-            font-size: 0.95rem;
-        }
-
-        /* ── Card specifics ── */
-        .card {
-            padding: 1.6rem 1.8rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .card h2 {
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: #555;
-            margin-bottom: 1rem;
-        }
-
-        /* ── Standalone section labels ── */
-        .section-label {
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: #444;
-            margin: 1.6rem 0 0.7rem 0.2rem;
-        }
-
-        /* ── Favicon inside links ── */
-        .links .favicon {
-            width: 16px;
-            height: 16px;
-            border-radius: 3px;
-            flex-shrink: 0;
-            filter: grayscale(0.3) brightness(0.9);
-            transition: filter 0.2s ease;
-        }
-
-        .links li a:hover .favicon {
-            filter: grayscale(0) brightness(1);
-        }
-
-        /* ── Links list ── */
-        .links {
-            list-style: none;
+            z-index: 2;
             display: flex;
             flex-direction: column;
-            gap: 0.6rem;
+            gap: 2rem;
         }
 
-        /* each link = its own mini keycap */
-        .links li a {
+        /* ── Top Man-Page Banner ── */
+        .man-bar {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 0.7rem;
-            text-decoration: none;
-            color: #c8c8d0;
-            padding: 0.65rem 0.9rem;
-            border: 1px solid #1e1e25;
-            border-bottom: 1px solid #17171c;
-            border-radius: 8px;
-            font-size: 0.92rem;
-            background: linear-gradient(180deg, #141417 0%, #101013 100%);
-            box-shadow:
-                0 3px 0 0 #08080b,
-                0 4px 3px -1px rgba(0,0,0,0.45),
-                inset 0 1px 0 rgba(255,255,255,0.025);
-            transition: transform 0.12s cubic-bezier(.22,.68,0,1.1),
-                        box-shadow 0.12s ease,
-                        border-color 0.2s ease;
-        }
-
-        .links li a:hover {
-            transform: translateY(-2px);
-            border-color: #2a2a33;
-            box-shadow:
-                0 5px 0 0 #08080b,
-                0 7px 6px -1px rgba(0,0,0,0.5),
-                inset 0 1px 0 rgba(255,255,255,0.035);
-        }
-
-        .links li a:active {
-            transform: translateY(2px);
-            box-shadow:
-                0 1px 0 0 #08080b,
-                0 1px 2px rgba(0,0,0,0.35),
-                inset 0 1px 0 rgba(255,255,255,0.015);
-            transition-duration: 0.05s;
-        }
-
-        .links li a .icon {
-            font-size: 1.15rem;
-            width: 1.5rem;
-            text-align: center;
-            flex-shrink: 0;
-        }
-
-        .links li a .label {
-            flex: 1;
-        }
-
-        .links li a .arrow {
-            color: #444;
-            font-size: 0.8rem;
-            transition: transform 0.25s ease, color 0.25s ease;
-        }
-
-        .links li a:hover .arrow {
-            transform: translateX(4px);
-            color: #888;
-        }
-
-        /* ── Focus glow for keyboard nav ── */
-        .links li a:focus-visible {
-            outline: none;
-            border-color: #7b6bf5;
-            box-shadow:
-                0 3px 0 0 #08080b,
-                0 4px 3px -1px rgba(0,0,0,0.45),
-                0 0 0 3px rgba(120,80,255,0.15),
-                0 0 20px rgba(120,80,255,0.08);
-            animation: focusPulse 1.5s ease-in-out 1;
-        }
-
-        @keyframes focusPulse {
-            0%   { box-shadow: 0 3px 0 0 #08080b, 0 4px 3px -1px rgba(0,0,0,0.45), 0 0 0 2px rgba(120,80,255,0.0),  0 0 0px  rgba(120,80,255,0); }
-            50%  { box-shadow: 0 3px 0 0 #08080b, 0 4px 3px -1px rgba(0,0,0,0.45), 0 0 0 4px rgba(120,80,255,0.2),  0 0 25px rgba(120,80,255,0.1); }
-            100% { box-shadow: 0 3px 0 0 #08080b, 0 4px 3px -1px rgba(0,0,0,0.45), 0 0 0 3px rgba(120,80,255,0.15), 0 0 20px rgba(120,80,255,0.08); }
-        }
-
-        /* also glow the parent cards on focus-within */
-        .card:focus-within {
-            box-shadow:
-                0 4px 0 0 #0a0a0d,
-                0 6px 4px -1px rgba(0,0,0,0.5),
-                0 0 25px rgba(120,80,255,0.05);
-        }
-
-        /* ── Terminal status line ── */
-        .terminal {
-            font-family: "Cascadia Code", "Fira Code", "SF Mono", "Consolas", monospace;
+            color: var(--muted);
             font-size: 0.78rem;
-            color: #333;
-            text-align: center;
-            margin-top: 1.2rem;
-            padding: 0.6rem 0;
-            letter-spacing: 0.02em;
-            user-select: none;
-        }
-
-        .terminal .prompt {
-            color: #444;
-        }
-
-        .terminal .path {
-            color: #555;
-        }
-
-        .terminal .cursor {
-            display: inline-block;
-            width: 7px;
-            height: 1em;
-            background: #555;
-            margin-left: 2px;
-            vertical-align: text-bottom;
-            animation: blink 1s step-end infinite;
-        }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50%      { opacity: 0; }
-        }
-
-        /* ── Footer ── */
-        .footer {
-            text-align: center;
-            color: #282828;
-            font-size: 0.7rem;
-            margin-top: 0.3rem;
+            border-bottom: 1px solid var(--rule);
+            padding-bottom: 0.65rem;
             letter-spacing: 0.03em;
         }
 
-        /* ── Responsive ── */
-        @media (max-width: 480px) {
-            body { padding: 2rem 0.8rem 1.5rem; }
-            .intro { padding: 1.6rem 1.4rem; }
-            .card { padding: 1.3rem 1.4rem; }
-            .intro h1 { font-size: 1.3rem; }
-            .terminal { font-size: 0.7rem; }
+        .man-bar .man-center {
+            color: var(--dim);
+        }
+
+        /* ── Intro / Header ── */
+        .intro-block {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .intro-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--fg-bright);
+            letter-spacing: -0.02em;
+        }
+
+        .arpa-banner {
+            font-size: 0.76rem;
+            color: var(--muted);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.4rem;
+            line-height: 1.5;
+        }
+
+        .arpa-banner .arpa-host {
+            color: var(--accent);
+            text-decoration: none;
+            border-bottom: 1px dotted rgba(82, 138, 100, 0.4);
+            word-break: break-all;
+            transition: color 0.15s ease, border-color 0.15s ease;
+        }
+
+        .arpa-banner .arpa-host:hover {
+            color: var(--fg-bright);
+            border-bottom-color: var(--fg-bright);
+        }
+
+        .copy-btn {
+            background: transparent;
+            border: 1px solid var(--rule);
+            color: var(--dim);
+            font-family: var(--mono);
+            font-size: 0.68rem;
+            padding: 0.08rem 0.4rem;
+            cursor: pointer;
+            transition: color 0.15s ease, border-color 0.15s ease;
+        }
+
+        .copy-btn:hover {
+            color: var(--fg);
+            border-color: var(--muted);
+        }
+
+        /* ── Interactive Command Prompt (cd blogs, etc.) ── */
+        .cmd-panel {
+            border: 1px solid var(--rule);
+            background: rgba(10, 13, 10, 0.72);
+            padding: 0.7rem 0.9rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .cmd-line {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: text;
+        }
+
+        .cmd-prompt {
+            color: var(--muted);
+            font-size: 0.82rem;
+            white-space: nowrap;
+            user-select: none;
+        }
+
+        .cmd-prompt .host {
+            color: var(--accent);
+        }
+
+        .cmd-input {
+            background: transparent;
+            border: none;
+            color: var(--fg-bright);
+            font-family: var(--mono);
+            font-size: 0.84rem;
+            flex: 1;
+            outline: none;
+            caret-color: var(--accent);
+            min-width: 0;
+        }
+
+        .cmd-input::placeholder {
+            color: var(--dim);
+            opacity: 0.3;
+        }
+
+        .cmd-hints {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.72rem;
+            color: var(--dim);
+        }
+
+        .cmd-chip {
+            background: transparent;
+            border: none;
+            color: var(--muted);
+            font-family: var(--mono);
+            font-size: 0.72rem;
+            cursor: pointer;
+            padding: 0 0.2rem;
+            text-decoration: underline;
+            text-decoration-color: var(--rule);
+            text-underline-offset: 3px;
+            transition: color 0.15s ease, text-decoration-color 0.15s ease;
+        }
+
+        .cmd-chip:hover {
+            color: var(--accent);
+            text-decoration-color: var(--accent);
+        }
+
+        .cmd-feedback {
+            font-size: 0.75rem;
+            color: var(--accent);
+            min-height: 0;
+        }
+
+        .cmd-feedback a {
+            color: var(--fg-bright);
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            text-decoration-color: var(--accent);
+            transition: color 0.15s ease;
+        }
+
+        .cmd-feedback a:hover {
+            color: var(--accent);
+        }
+
+        .cmd-feedback:empty {
+            display: none;
+        }
+
+        /* ── Man-Page Sections ── */
+        .man-section {
+            display: flex;
+            flex-direction: column;
+            gap: 0.55rem;
+            scroll-margin-top: 1.5rem;
+        }
+
+        .man-heading {
+            font-size: 0.86rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--fg-bright);
+            display: inline-block;
+            align-self: flex-start;
+            transition: color 0.25s ease, text-shadow 0.25s ease;
+        }
+
+        .man-body {
+            padding-left: 2.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            color: var(--fg);
+        }
+
+        .man-subsection {
+            display: flex;
+            flex-direction: column;
+            gap: 0.45rem;
+            scroll-margin-top: 1.5rem;
+        }
+
+        .man-subheading {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--muted);
+            display: inline-block;
+            align-self: flex-start;
+            transition: color 0.25s ease, text-shadow 0.25s ease;
+        }
+
+        /* 3-second highlight state triggered by cd <section> — text letters only, no box */
+        .section-highlight {
+            color: var(--accent) !important;
+            text-shadow: 0 0 8px rgba(82, 138, 100, 0.4);
+            background: transparent !important;
+            box-shadow: none !important;
+        }
+
+        /* ── Tree / Man-Page Lists ── */
+        .man-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.45rem;
+        }
+
+        .man-list li {
+            display: flex;
+            align-items: baseline;
+            gap: 0.65rem;
+            line-height: 1.55;
+        }
+
+        .tree-branch {
+            color: var(--dim);
+            user-select: none;
+            flex-shrink: 0;
+        }
+
+        .man-link {
+            color: var(--fg);
+            text-decoration: none;
+            border-bottom: 1px solid var(--rule);
+            padding-bottom: 1px;
+            transition: color 0.15s ease, border-color 0.15s ease;
+        }
+
+        .man-link:hover {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+        }
+
+        .man-link:focus-visible {
+            outline: 1px dashed var(--accent);
+            outline-offset: 3px;
+        }
+
+        .link-meta {
+            color: var(--dim);
+            font-size: 0.76rem;
+            margin-left: auto;
+            white-space: nowrap;
+            padding-left: 0.75rem;
+        }
+
+        /* ── Bottom Man-Page Footer ── */
+        .man-footer {
+            margin-top: 1rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid var(--rule);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.76rem;
+            color: var(--dim);
+        }
+
+        @media (max-width: 560px) {
+            body {
+                padding: 1.75rem 1rem 3rem;
+            }
+            .man-body {
+                padding-left: 1rem;
+            }
+            .man-list li {
+                flex-wrap: wrap;
+            }
+            .link-meta {
+                width: 100%;
+                margin-left: 1.6rem;
+                padding-left: 0;
+                margin-top: -0.2rem;
+            }
+            .man-bar .man-center {
+                display: none;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="cobra-bg" aria-hidden="true">
-        <pre>
+    <div class="cursor-glow" aria-hidden="true"></div>
+
+    <!-- Background-only Cobra ASCII Art revealed by cursor radius -->
+    <div class="cobra-bg" id="cobra-bg" aria-hidden="true">
+        <pre id="raw-cobra-ascii">
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@##%%%%%%%%%%%%%%%%%%%%%%%%#%%%%##%%%#%%%%%%##%%%%%%%%%%%#%%%%%%%%%%%%%%%%@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@###%%%%%%%%%%%%%%%%%%%%%**##%%%%%%%##%%%%####*#%%%%%%%%%%%%%%%%%%%%%#%%%%#%%%%@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%%%#%%%%%%%%%%%%%%%%%%##%##%%%%%%%%%##%####*%#*#%%%%%%%%%%%%%%%%%%%%%%#*##%%@%@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -441,95 +507,452 @@
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@==-===+++=--=---===+==-=====++*##***###%@@@@@@@@@@@@@@@@%%*++++***************#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@++=-===++*+=--:-==+++--++*##%%%%#+++**#%%%##@@@@@@@@@@@@%%*+++++==+***********#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@***+===++++**+===--=-==+#%%%%%%%%#*###%%##%#%@@@@@@@@@@@%%*+++=---+++*******++#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-            </pre>
+        </pre>
     </div>
 
-    <div class="container">
+    <main class="man-page">
+        <!-- Classic UNIX Man Header -->
+        <div class="man-bar">
+            <span>SHUBHAM(1)</span>
+            <span class="man-center">General Commands Manual</span>
+            <span>SHUBHAM(1)</span>
+        </div>
 
-        <section class="intro tilt">
-            <h1>hi, im Shubham!</h1>
+        <!-- NAME -->
+        <section class="man-section" id="name" aria-labelledby="heading-name">
+            <h2 class="man-heading" id="heading-name">NAME</h2>
+            <div class="man-body" id="top">
+                <p>shubham &mdash; systems tinkerer &amp; kernel hacker</p>
+                <p class="arpa-banner">
+                    <span>also hosted on .arpa at</span>
+                    <a class="arpa-host" href="http://shoobham84.6.2.8.0.6.3.0.0.0.7.4.0.1.0.0.2.ip6.arpa" target="_blank" rel="noreferrer noopener">shoobham84.6.2.8.0.6.3.0.0.0.7.4.0.1.0.0.2.ip6.arpa</a>
+                    <button type="button" class="copy-btn" id="copy-arpa" title="Copy .arpa hostname">[copy]</button>
+                </p>
+            </div>
         </section>
 
-        <h2 class="section-label">Links</h2>
-        <ul class="links">
-            <li>
-                <a href="https://github.com/shoobham84" target="_blank" rel="noreferrer noopener">
-                    <img class="favicon" src="https://github.githubassets.com/favicons/favicon-dark.svg" alt="" loading="lazy">
-                    <span class="label">GitHub</span>
-                    <span class="arrow">→</span>
-                </a>
-            </li>
-            <li>
-                <a href="https://www.linkedin.com/in/shubham-nayak-46bba7379/" target="_blank" rel="noreferrer noopener">
-                    <img class="favicon" src="https://static.licdn.com/aero-v1/sc/h/akt4ae504epesldzj74dzred8" alt="" loading="lazy">
-                    <span class="label">LinkedIn</span>
-                    <span class="arrow">→</span>
-                </a>
-            </li>
-            <li>
-                <a href="https://x.com/shoobam84" target="_blank" rel="noreferrer noopener">
-                    <img class="favicon" src="https://abs.twimg.com/favicons/twitter.3.ico" alt="" loading="lazy">
-                    <span class="label">X / Twitter</span>
-                    <span class="arrow">→</span>
-                </a>
-            </li>
-        </ul>
+        <!-- tty (Interactive Command Navigation Box) -->
+        <section class="man-section" id="tty" aria-labelledby="heading-tty">
+            <h2 class="man-heading" id="heading-tty">tty</h2>
+            <div class="man-body">
+                <div class="cmd-panel" id="cmd-panel" aria-label="Navigation terminal">
+                    <form class="cmd-line" id="cmd-form" autocomplete="off">
+                        <span class="cmd-prompt">visitor@<span class="host">arpa</span>:~$</span>
+                        <input
+                            type="text"
+                            class="cmd-input"
+                            id="cmd-input"
+                            placeholder="cd notes, cd contributions, cat github, cat linux..."
+                            aria-label="Command input — try cd notes, cd contributions, cat github, cat linux, cat alsa, ls"
+                        >
+                    </form>
+                    <div class="cmd-hints">
+                        <span>try:</span>
+                        <button type="button" class="cmd-chip" data-cmd="cd notes">cd notes</button>
+                        <button type="button" class="cmd-chip" data-cmd="cd contributions">cd contributions</button>
+                        <button type="button" class="cmd-chip" data-cmd="cat github">cat github</button>
+                        <button type="button" class="cmd-chip" data-cmd="cat blogs">cat blogs</button>
+                        <button type="button" class="cmd-chip" data-cmd="cat linux">cat linux</button>
+                        <button type="button" class="cmd-chip" data-cmd="ls">ls</button>
+                    </div>
+                    <div class="cmd-feedback" id="cmd-feedback" aria-live="polite"></div>
+                </div>
+            </div>
+        </section>
 
-        <h2 class="section-label">Blogs</h2>
-        <ul class="links">
-            <li>
-                <a href="https://shoobham84.github.io/REJS/" target="_blank" rel="noreferrer noopener">
-                    <img class="favicon" src="https://github.githubassets.com/favicons/favicon-dark.svg" alt="" loading="lazy">
-                    <span class="label">Reverse Engineering Jane Street's ASIC Challenge</span>
-                    <span class="arrow">→</span>
-                </a>
-            </li>
-        </ul>
+        <!-- DESCRIPTION -->
+        <section class="man-section" id="description" aria-labelledby="heading-description">
+            <h2 class="man-heading" id="heading-description">DESCRIPTION</h2>
+            <div class="man-body">
+                <p>hi wassup</p>
+            </div>
+        </section>
 
-        <h2 class="section-label">Open Source Shenanigans</h2>
-        <ul class="links">
-            <li>
-                <a href="https://lore.kernel.org/all/87tsqkwdue.wl-tiwai@suse.de/T/#t" target="_blank" rel="noreferrer noopener">
-                    <img class="favicon" src="https://git.kernel.org/favicon.ico" alt="" loading="lazy">
-                    <span class="label">Contribution to Linux Kernel's ALSA realtek driver to fix an LED</span>
-                    <span class="arrow">→</span>
-                </a>
-            </li>
-        </ul>
+        <!-- NOTES -->
+        <section class="man-section" id="notes" aria-labelledby="heading-notes">
+            <h2 class="man-heading" id="heading-notes">NOTES</h2>
+            <div class="man-body">
+                <ul class="man-list">
+                    <li>
+                        <span class="tree-branch">└─</span>
+                        <a class="man-link" href="https://shoobham84.github.io/REJS/" target="_blank" rel="noreferrer noopener">Reverse Engineering Jane Street's ASIC Challenge</a>
+                        <span class="link-meta">shoobham84.github.io/REJS</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
 
-        <div class="terminal">
-            <span class="prompt">visitor</span><span style="color:#333">@</span><span class="path">arpa</span>
-            <span style="color:#333">~</span>
-            <span style="color:#383838">$</span>
-            <span class="cursor"></span>
-        </div>
-        <p class="footer">&copy; Shubham Nayak</p>
-    </div>
+        <!-- CONTRIBUTIONS / PROJECTS -->
+        <section class="man-section" id="projects" aria-labelledby="heading-projects">
+            <h2 class="man-heading" id="heading-projects">CONTRIBUTIONS / PROJECTS</h2>
+            <div class="man-body">
+                <ul class="man-list">
+                    <li>
+                        <span class="tree-branch">└─</span>
+                        <a class="man-link" href="https://lore.kernel.org/all/87tsqkwdue.wl-tiwai@suse.de/T/#t" target="_blank" rel="noreferrer noopener">Contribution to Linux Kernel's ALSA realtek driver to fix an LED</a>
+                        <span class="link-meta">lore.kernel.org</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- SEE ALSO -->
+        <section class="man-section" id="see-also" aria-labelledby="heading-see-also">
+            <h2 class="man-heading" id="heading-see-also">SEE ALSO</h2>
+            <div class="man-body">
+                <ul class="man-list">
+                    <li>
+                        <span class="tree-branch">├─</span>
+                        <a class="man-link" href="https://github.com/shoobham84" target="_blank" rel="noreferrer noopener">github(1)</a>
+                        <span class="link-meta">github.com/shoobham84</span>
+                    </li>
+                    <li>
+                        <span class="tree-branch">├─</span>
+                        <a class="man-link" href="https://www.linkedin.com/in/shubham-nayak-46bba7379/" target="_blank" rel="noreferrer noopener">linkedin(1)</a>
+                        <span class="link-meta">in/shubham-nayak-46bba7379</span>
+                    </li>
+                    <li>
+                        <span class="tree-branch">└─</span>
+                        <a class="man-link" href="https://x.com/shoobam84" target="_blank" rel="noreferrer noopener">x(1)</a>
+                        <span class="link-meta">x.com/shoobam84</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Man Footer -->
+        <footer class="man-footer">
+            <span>&copy; Shubham Nayak</span>
+            <span>ip6.arpa // SHUBHAM(1)</span>
+        </footer>
+    </main>
 
     <script>
-        // Mouse-tracking tilt — plays nice with the keycap shadow
-        document.querySelectorAll('.tilt').forEach(function (card) {
-            var isCard = card.classList.contains('card');
-            var wall = isCard ? '#0a0a0d' : '#0a0a0d';
+        (function () {
+            // 1. Color-grade and crop the background Cobra ASCII so it looks sharp under the cursor glow
+            var rawPre = document.getElementById('raw-cobra-ascii');
+            var rawLines = rawPre.textContent.replace(/^\s*\n|\s+$/g, '').split('\n');
+            var charClass = {
+                '@': 'c0',
+                '%': 'c1',
+                '#': 'c2',
+                '*': 'c3',
+                '+': 'c4',
+                '=': 'c5',
+                '-': 'c6',
+                ':': 'c7',
+                '.': 'c8'
+            };
 
-            card.addEventListener('mousemove', function (e) {
-                var rect = card.getBoundingClientRect();
-                var x = e.clientX - rect.left;
-                var y = e.clientY - rect.top;
-                var centerX = rect.width / 2;
-                var centerY = rect.height / 2;
-                var rotateX = ((y - centerY) / centerY) * -2.5;
-                var rotateY = ((x - centerX) / centerX) * 2.5;
-                card.style.transform = 'perspective(600px) rotateX(' + rotateX + 'deg) rotateY(' + rotateY + 'deg) translateY(-2px)';
-                card.style.boxShadow = '0 6px 0 0 ' + wall + ', 0 10px 8px -2px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.04)';
-            });
-            card.addEventListener('mouseleave', function () {
-                card.style.transform = '';
-                card.style.boxShadow = '';
-            });
-        });
+            function colorizeLine(str) {
+                var out = '';
+                var i = 0;
+                var len = str.length;
+                while (i < len) {
+                    var ch = str[i];
+                    var cls = charClass[ch] || 'c0';
+                    var j = i + 1;
+                    while (j < len && (charClass[str[j]] || 'c0') === cls) {
+                        j++;
+                    }
+                    out += '<span class="' + cls + '">' + str.slice(i, j) + '</span>';
+                    i = j;
+                }
+                return out;
+            }
 
-        console.log("Hail Naga!");
+            var renderedLines = [];
+            for (var r = 0; r < rawLines.length; r++) {
+                // Trim the 60-col solid @ pillarbox bars on left & right so only the 72x70 cobra sits in the background
+                renderedLines.push(colorizeLine(rawLines[r].slice(60, 132)));
+            }
+            rawPre.innerHTML = renderedLines.join('\n');
+
+            // 2. Cursor glow tracking — reveals the faint cobra ASCII art only around the cursor
+            function updateCursorPos(x, y) {
+                document.documentElement.style.setProperty('--mx', x + 'px');
+                document.documentElement.style.setProperty('--my', y + 'px');
+            }
+
+            window.addEventListener('mousemove', function (e) {
+                updateCursorPos(e.clientX, e.clientY);
+            }, { passive: true });
+
+            window.addEventListener('touchmove', function (e) {
+                if (e.touches && e.touches[0]) {
+                    updateCursorPos(e.touches[0].clientX, e.touches[0].clientY);
+                }
+            }, { passive: true });
+
+            // 3. Copy .arpa hostname button
+            var copyBtn = document.getElementById('copy-arpa');
+            var arpaHost = 'shoobham84.6.2.8.0.6.3.0.0.0.7.4.0.1.0.0.2.ip6.arpa';
+            copyBtn.addEventListener('click', function () {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(arpaHost).catch(function () {});
+                } else {
+                    var ta = document.createElement('textarea');
+                    ta.value = arpaHost;
+                    document.body.appendChild(ta);
+                    ta.select();
+                    try { document.execCommand('copy'); } catch (err) {}
+                    document.body.removeChild(ta);
+                }
+                copyBtn.textContent = '[copied]';
+                setTimeout(function () {
+                    copyBtn.textContent = '[copy]';
+                }, 2000);
+            });
+
+            // 4. Interactive `cd <section>` terminal navigation with 3-second subtitle highlight
+            var cmdPanel = document.getElementById('cmd-panel');
+            var cmdForm = document.getElementById('cmd-form');
+            var cmdInput = document.getElementById('cmd-input');
+            var cmdFeedback = document.getElementById('cmd-feedback');
+            var activeTimers = {};
+
+            cmdPanel.addEventListener('click', function (e) {
+                if (e.target.tagName !== 'BUTTON') {
+                    cmdInput.focus();
+                }
+            });
+
+            var targets = {
+                'name': { sectionId: 'name', headingId: 'heading-name', label: '~/name' },
+                'tty': { sectionId: 'tty', headingId: 'heading-tty', label: '~/tty' },
+                'cmd': { sectionId: 'tty', headingId: 'heading-tty', label: '~/tty' },
+                'terminal': { sectionId: 'tty', headingId: 'heading-tty', label: '~/tty' },
+                'description': { sectionId: 'description', headingId: 'heading-description', label: '~/description' },
+                'about': { sectionId: 'description', headingId: 'heading-description', label: '~/description' },
+                'aboutme': { sectionId: 'description', headingId: 'heading-description', label: '~/description' },
+                'bio': { sectionId: 'description', headingId: 'heading-description', label: '~/description' },
+                'notes': { sectionId: 'notes', headingId: 'heading-notes', label: '~/notes' },
+                'note': { sectionId: 'notes', headingId: 'heading-notes', label: '~/notes' },
+                'blogs': { sectionId: 'notes', headingId: 'heading-notes', label: '~/notes' },
+                'blog': { sectionId: 'notes', headingId: 'heading-notes', label: '~/notes' },
+                'writings': { sectionId: 'notes', headingId: 'heading-notes', label: '~/notes' },
+                'articles': { sectionId: 'notes', headingId: 'heading-notes', label: '~/notes' },
+                'rejs': { sectionId: 'notes', headingId: 'heading-notes', label: '~/notes' },
+                'asic': { sectionId: 'notes', headingId: 'heading-notes', label: '~/notes' },
+                'contributions': { sectionId: 'projects', headingId: 'heading-projects', label: '~/contributions' },
+                'contribution': { sectionId: 'projects', headingId: 'heading-projects', label: '~/contributions' },
+                'projects': { sectionId: 'projects', headingId: 'heading-projects', label: '~/contributions' },
+                'project': { sectionId: 'projects', headingId: 'heading-projects', label: '~/contributions' },
+                'patches': { sectionId: 'projects', headingId: 'heading-projects', label: '~/contributions' },
+                'patch': { sectionId: 'projects', headingId: 'heading-projects', label: '~/contributions' },
+                'work': { sectionId: 'projects', headingId: 'heading-projects', label: '~/contributions' },
+                'mywork': { sectionId: 'projects', headingId: 'heading-projects', label: '~/contributions' },
+                'kernel': { sectionId: 'projects', headingId: 'heading-projects', label: '~/contributions' },
+                'linux': { sectionId: 'projects', headingId: 'heading-projects', label: '~/contributions' },
+                'alsa': { sectionId: 'projects', headingId: 'heading-projects', label: '~/contributions' },
+                'oss': { sectionId: 'projects', headingId: 'heading-projects', label: '~/contributions' },
+                'seealso': { sectionId: 'see-also', headingId: 'heading-see-also', label: '~/see-also' },
+                'see': { sectionId: 'see-also', headingId: 'heading-see-also', label: '~/see-also' },
+                'also': { sectionId: 'see-also', headingId: 'heading-see-also', label: '~/see-also' },
+                'links': { sectionId: 'see-also', headingId: 'heading-see-also', label: '~/see-also' },
+                'socials': { sectionId: 'see-also', headingId: 'heading-see-also', label: '~/see-also' }
+            };
+
+            function jumpAndHighlight(targetKey) {
+                var info = targets[targetKey];
+                if (!info) return false;
+
+                var sectionEl = document.getElementById(info.sectionId);
+                var headingEl = document.getElementById(info.headingId);
+                if (!sectionEl || !headingEl) return false;
+
+                sectionEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                // Highlight the subtitle/heading for 3 seconds
+                headingEl.classList.add('section-highlight');
+                if (activeTimers[info.headingId]) {
+                    clearTimeout(activeTimers[info.headingId]);
+                }
+                activeTimers[info.headingId] = setTimeout(function () {
+                    headingEl.classList.remove('section-highlight');
+                }, 3000);
+
+                cmdFeedback.textContent = '-> jumped to ' + info.label + ' (highlighted for 3s)';
+                return true;
+            }
+
+            var catFiles = {
+                'github': { url: 'https://github.com/shoobham84', label: 'github.com/shoobham84' },
+                'gh': { url: 'https://github.com/shoobham84', label: 'github.com/shoobham84' },
+                'git': { url: 'https://github.com/shoobham84', label: 'github.com/shoobham84' },
+                'linkedin': { url: 'https://www.linkedin.com/in/shubham-nayak-46bba7379/', label: 'in/shubham-nayak-46bba7379' },
+                'in': { url: 'https://www.linkedin.com/in/shubham-nayak-46bba7379/', label: 'in/shubham-nayak-46bba7379' },
+                'x': { url: 'https://x.com/shoobam84', label: 'x.com/shoobam84' },
+                'twitter': { url: 'https://x.com/shoobam84', label: 'x.com/shoobam84' },
+                'xtwitter': { url: 'https://x.com/shoobam84', label: 'x.com/shoobam84' },
+                'notes': { url: 'https://shoobham84.github.io/REJS/', label: 'shoobham84.github.io/REJS' },
+                'note': { url: 'https://shoobham84.github.io/REJS/', label: 'shoobham84.github.io/REJS' },
+                'blogs': { url: 'https://shoobham84.github.io/REJS/', label: 'shoobham84.github.io/REJS' },
+                'blog': { url: 'https://shoobham84.github.io/REJS/', label: 'shoobham84.github.io/REJS' },
+                'rejs': { url: 'https://shoobham84.github.io/REJS/', label: 'shoobham84.github.io/REJS' },
+                'asic': { url: 'https://shoobham84.github.io/REJS/', label: 'shoobham84.github.io/REJS' },
+                'janestreet': { url: 'https://shoobham84.github.io/REJS/', label: 'shoobham84.github.io/REJS' },
+                'projects': { url: 'https://lore.kernel.org/all/87tsqkwdue.wl-tiwai@suse.de/T/#t', label: 'lore.kernel.org (Linux Kernel ALSA patch)' },
+                'project': { url: 'https://lore.kernel.org/all/87tsqkwdue.wl-tiwai@suse.de/T/#t', label: 'lore.kernel.org (Linux Kernel ALSA patch)' },
+                'contributions': { url: 'https://lore.kernel.org/all/87tsqkwdue.wl-tiwai@suse.de/T/#t', label: 'lore.kernel.org (Linux Kernel ALSA patch)' },
+                'kernel': { url: 'https://lore.kernel.org/all/87tsqkwdue.wl-tiwai@suse.de/T/#t', label: 'lore.kernel.org (Linux Kernel ALSA patch)' },
+                'linux': { url: 'https://lore.kernel.org/all/87tsqkwdue.wl-tiwai@suse.de/T/#t', label: 'lore.kernel.org (Linux Kernel ALSA patch)' },
+                'linuxkernel': { url: 'https://lore.kernel.org/all/87tsqkwdue.wl-tiwai@suse.de/T/#t', label: 'lore.kernel.org (Linux Kernel ALSA patch)' },
+                'alsa': { url: 'https://lore.kernel.org/all/87tsqkwdue.wl-tiwai@suse.de/T/#t', label: 'lore.kernel.org (Linux Kernel ALSA patch)' },
+                'alsaalsa': { url: 'https://lore.kernel.org/all/87tsqkwdue.wl-tiwai@suse.de/T/#t', label: 'lore.kernel.org (Linux Kernel ALSA patch)' },
+                'alsadriver': { url: 'https://lore.kernel.org/all/87tsqkwdue.wl-tiwai@suse.de/T/#t', label: 'lore.kernel.org (Linux Kernel ALSA patch)' },
+                'alsaled': { url: 'https://lore.kernel.org/all/87tsqkwdue.wl-tiwai@suse.de/T/#t', label: 'lore.kernel.org (Linux Kernel ALSA patch)' },
+                'linuxalsa': { url: 'https://lore.kernel.org/all/87tsqkwdue.wl-tiwai@suse.de/T/#t', label: 'lore.kernel.org (Linux Kernel ALSA patch)' },
+                'realtek': { url: 'https://lore.kernel.org/all/87tsqkwdue.wl-tiwai@suse.de/T/#t', label: 'lore.kernel.org (Linux Kernel ALSA patch)' },
+                'driver': { url: 'https://lore.kernel.org/all/87tsqkwdue.wl-tiwai@suse.de/T/#t', label: 'lore.kernel.org (Linux Kernel ALSA patch)' },
+                'patch': { url: 'https://lore.kernel.org/all/87tsqkwdue.wl-tiwai@suse.de/T/#t', label: 'lore.kernel.org (Linux Kernel ALSA patch)' },
+                'led': { url: 'https://lore.kernel.org/all/87tsqkwdue.wl-tiwai@suse.de/T/#t', label: 'lore.kernel.org (Linux Kernel ALSA patch)' },
+                'arpa': { url: 'http://shoobham84.6.2.8.0.6.3.0.0.0.7.4.0.1.0.0.2.ip6.arpa', label: 'shoobham84...ip6.arpa' }
+            };
+
+            function openCat(item) {
+                try {
+                    window.open(item.url, '_blank', 'noopener,noreferrer');
+                } catch (e) {}
+                cmdFeedback.innerHTML = '-> opened <a href="' + item.url + '" target="_blank" rel="noreferrer noopener">' + item.label + '</a> [new tab]';
+            }
+
+            function runCommand(rawInput) {
+                var trimmed = rawInput.trim();
+                if (!trimmed) return;
+
+                var lower = trimmed.toLowerCase();
+
+                if (lower === 'clear' || lower === 'cls') {
+                    cmdFeedback.innerHTML = '';
+                    return;
+                }
+
+                if (lower === 'ls' || lower === 'dir' || lower === 'tree') {
+                    cmdFeedback.textContent = 'name  tty  description/  notes/  contributions/  see-also/';
+                    return;
+                }
+
+                if (lower === 'ls see-also' || lower === 'ls seealso' || lower === 'ls links' || lower === 'ls ~/links') {
+                    cmdFeedback.textContent = 'github(1)  linkedin(1)  x(1)';
+                    return;
+                }
+
+                if (lower === 'ls notes' || lower === 'ls blogs' || lower === 'ls ~/notes' || lower === 'ls ~/work/blogs') {
+                    cmdFeedback.textContent = 'rejs (Reverse Engineering Jane Street ASIC)';
+                    return;
+                }
+
+                if (lower === 'ls contributions' || lower === 'ls projects' || lower === 'ls work' || lower === 'ls ~/work') {
+                    cmdFeedback.textContent = 'kernel-alsa-led (Linux Kernel ALSA Realtek driver LED patch)';
+                    return;
+                }
+
+                if (lower === 'help' || lower === 'man' || lower === 'man shubham') {
+                    cmdFeedback.textContent = 'usage: cd <description|notes|contributions|seealso> | cat <github|linkedin|x|notes|linux|alsa> | ls | clear';
+                    return;
+                }
+
+                if (lower === 'arpa') {
+                    cmdFeedback.textContent = arpaHost;
+                    return;
+                }
+
+                // Check for `cat <file>`, `open <file>`, or `xdg-open <file>`
+                var isCatCmd = false;
+                var catArg = '';
+                if (lower.indexOf('cat ') === 0) {
+                    isCatCmd = true;
+                    catArg = lower.slice(4).trim();
+                } else if (lower === 'cat') {
+                    cmdFeedback.textContent = 'cat: missing operand (try: cat github, cat blogs, cat linux, cat alsa)';
+                    return;
+                } else if (lower.indexOf('open ') === 0) {
+                    isCatCmd = true;
+                    catArg = lower.slice(5).trim();
+                } else if (lower.indexOf('xdg-open ') === 0) {
+                    isCatCmd = true;
+                    catArg = lower.slice(9).trim();
+                }
+
+                if (isCatCmd) {
+                    if (!catArg) {
+                        cmdFeedback.textContent = 'cat: missing operand (try: cat github, cat blogs, cat linux, cat alsa)';
+                        return;
+                    }
+                    var cleanCat = catArg.replace(/^[~./]+|[\/]+$/g, '');
+                    if (cleanCat.indexOf('links/') === 0) cleanCat = cleanCat.slice(6);
+                    if (cleanCat.indexOf('work/') === 0) cleanCat = cleanCat.slice(5);
+                    var normCat = cleanCat.replace(/[-_\s&/]+/g, '');
+
+                    if (normCat === 'description' || normCat === 'about' || normCat === 'aboutme' || normCat === 'abouttxt' || normCat === 'readme') {
+                        cmdFeedback.textContent = 'hi wassup';
+                        return;
+                    }
+
+                    if (normCat === 'seealso' || normCat === 'links' || normCat === 'socials') {
+                        cmdFeedback.innerHTML = 'see-also: <a href="https://github.com/shoobham84" target="_blank" rel="noreferrer noopener">github(1)</a> | <a href="https://www.linkedin.com/in/shubham-nayak-46bba7379/" target="_blank" rel="noreferrer noopener">linkedin(1)</a> | <a href="https://x.com/shoobam84" target="_blank" rel="noreferrer noopener">x(1)</a>';
+                        return;
+                    }
+
+                    var catItem = catFiles[normCat];
+                    if (catItem) {
+                        openCat(catItem);
+                        return;
+                    }
+
+                    cmdFeedback.textContent = 'cat: ' + catArg + ': No such file or link (try: cat github, cat blogs, cat linux, cat alsa)';
+                    return;
+                }
+
+                // Parse `cd <dest>` or direct `<dest>` name
+                var dest = lower;
+                if (lower.indexOf('cd ') === 0) {
+                    dest = lower.slice(3).trim();
+                }
+                // Strip leading/trailing slashes, ~, ./, and spaces/hyphens
+                dest = dest.replace(/^[~./]+|[\/]+$/g, '');
+                if (dest.indexOf('work/') === 0) {
+                    dest = dest.slice(5);
+                }
+                var normalized = dest.replace(/[-_\s&]+/g, '');
+
+                if (normalized === '' || normalized === '..') {
+                    document.getElementById('top').scrollIntoView({ behavior: 'smooth' });
+                    cmdFeedback.textContent = '-> ~';
+                    return;
+                }
+
+                if (jumpAndHighlight(normalized)) {
+                    return;
+                }
+
+                // If user typed a direct link name like "github" or "linkedin" without "cat", open it conveniently
+                var fallbackCat = catFiles[normalized];
+                if (fallbackCat) {
+                    openCat(fallbackCat);
+                    return;
+                }
+
+                cmdFeedback.textContent = 'cd: no such section: ' + dest + ' (try: cd notes, cd contributions, cd description, cd seealso, ls)';
+            }
+
+            cmdForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+                var val = cmdInput.value;
+                cmdInput.value = '';
+                runCommand(val);
+            });
+
+            document.querySelectorAll('.cmd-chip').forEach(function (chip) {
+                chip.addEventListener('click', function () {
+                    var c = chip.getAttribute('data-cmd');
+                    runCommand(c);
+                });
+            });
+
+            console.log("Hail Naga!");
+        })();
     </script>
 </body>
 </html>
