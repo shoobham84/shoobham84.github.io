@@ -386,6 +386,7 @@
             color: var(--dim);
             user-select: none;
             flex-shrink: 0;
+            white-space: pre;
         }
 
         .man-link {
@@ -415,6 +416,33 @@
             white-space: nowrap;
             padding-left: 0.75rem;
             flex-shrink: 0;
+        }
+
+        .contrib-entry {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            min-width: 0;
+            flex: 1;
+        }
+
+        .contrib-title {
+            color: var(--fg);
+            line-height: 1.5;
+        }
+
+        .contrib-links {
+            font-size: 0.76rem;
+            color: var(--dim);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.45rem;
+            line-height: 1.4;
+        }
+
+        .contrib-links .link-sep {
+            color: var(--rule);
         }
 
         /* ── Bottom Man-Page Footer ── */
@@ -487,6 +515,10 @@
                 white-space: normal;
                 overflow-wrap: anywhere;
                 line-height: 1.35;
+            }
+
+            .contrib-entry {
+                grid-column: 2;
             }
 
             /* Prevent mobile browser auto-zoom on input focus by using 16px font-size */
@@ -717,6 +749,17 @@
             <div class="man-body">
                 <ul class="man-list">
                     <li>
+                        <span class="tree-branch">├─</span>
+                        <div class="contrib-entry">
+                            <span class="contrib-title">Contribution to GCC's C++ frontend to remove redundant lvalue check for reference captures [PR87638]</span>
+                            <span class="contrib-links">
+                                <span>commit: <a class="man-link" href="https://gcc.gnu.org/pipermail/gcc-patches/2026-October/735365.html" target="_blank" rel="noreferrer noopener">gcc.gnu.org</a></span>
+                                <span class="link-sep">//</span>
+                                <span>discussion: <a class="man-link" href="https://inbox.sourceware.org/gcc-patches/?q=Shubham+Nayak" target="_blank" rel="noreferrer noopener">inbox.sourceware.org</a></span>
+                            </span>
+                        </div>
+                    </li>
+                    <li>
                         <span class="tree-branch">└─</span>
                         <a class="man-link" href="https://lore.kernel.org/all/87tsqkwdue.wl-tiwai@suse.de/T/#t" target="_blank" rel="noreferrer noopener">Contribution to Linux Kernel's ALSA realtek driver to fix an LED</a>
                         <span class="link-meta">lore.kernel.org</span>
@@ -885,6 +928,7 @@
                 'kernel': { sectionId: 'projects', headingId: 'heading-projects', label: '~/contributions' },
                 'linux': { sectionId: 'projects', headingId: 'heading-projects', label: '~/contributions' },
                 'alsa': { sectionId: 'projects', headingId: 'heading-projects', label: '~/contributions' },
+                'gcc': { sectionId: 'projects', headingId: 'heading-projects', label: '~/contributions' },
                 'oss': { sectionId: 'projects', headingId: 'heading-projects', label: '~/contributions' },
                 'seealso': { sectionId: 'see-also', headingId: 'heading-see-also', label: '~/see-also' },
                 'see': { sectionId: 'see-also', headingId: 'heading-see-also', label: '~/see-also' },
@@ -948,6 +992,8 @@
                 'patch': { url: 'https://lore.kernel.org/all/87tsqkwdue.wl-tiwai@suse.de/T/#t', label: 'lore.kernel.org (Linux Kernel ALSA patch)' },
                 'patches': { url: 'https://lore.kernel.org/all/87tsqkwdue.wl-tiwai@suse.de/T/#t', label: 'lore.kernel.org (Linux Kernel ALSA patch)' },
                 'led': { url: 'https://lore.kernel.org/all/87tsqkwdue.wl-tiwai@suse.de/T/#t', label: 'lore.kernel.org (Linux Kernel ALSA patch)' },
+                'gcc': { url: 'https://gcc.gnu.org/pipermail/gcc-patches/2026-October/735365.html', label: 'gcc.gnu.org (GCC C++ frontend patch)' },
+                'sourceware': { url: 'https://inbox.sourceware.org/gcc-patches/?q=Shubham+Nayak', label: 'inbox.sourceware.org (gcc-patches public-inbox)' },
                 'mail': { url: 'mailto:shubhamnayak392reborn@gmail.com', label: 'shubhamnayak392reborn@gmail.com' },
                 'email': { url: 'mailto:shubhamnayak392reborn@gmail.com', label: 'shubhamnayak392reborn@gmail.com' },
                 'gmail': { url: 'mailto:shubhamnayak392reborn@gmail.com', label: 'shubhamnayak392reborn@gmail.com' },
@@ -988,12 +1034,12 @@
                 }
 
                 if (lower === 'ls contributions' || lower === 'ls projects' || lower === 'ls work' || lower === 'ls ~/work') {
-                    cmdFeedback.textContent = 'kernel-alsa-led (Linux Kernel ALSA Realtek driver LED patch)';
+                    cmdFeedback.textContent = 'gcc-cxx-lambda (GCC C++ frontend patch)  kernel-alsa-led (Linux Kernel ALSA Realtek driver LED patch)';
                     return;
                 }
 
                 if (lower === 'help' || lower === 'man' || lower === 'man shubham') {
-                    cmdFeedback.textContent = 'usage: cd <description|notes|contributions|seealso> | cat <github|linkedin|x|notes|linux|alsa> | ls | clear';
+                    cmdFeedback.textContent = 'usage: cd <description|notes|contributions|seealso> | cat <github|linkedin|x|notes|gcc|linux|alsa> | ls | clear';
                     return;
                 }
 
