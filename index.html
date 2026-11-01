@@ -445,6 +445,41 @@
             color: var(--rule);
         }
 
+        /* ── Webring Entry in SEE ALSO ── */
+        .webring-entry {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+            min-width: 0;
+            flex: 1;
+        }
+
+        .webring-nav {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            gap: 0.65rem;
+            line-height: 1.55;
+        }
+
+        .webring-badge {
+            margin-top: 0.2rem;
+            line-height: 1;
+        }
+
+        .webring-badge img {
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+            border: 1px solid var(--rule);
+            vertical-align: middle;
+            transition: border-color 0.15s ease;
+        }
+
+        .webring-badge a:hover img {
+            border-color: var(--accent);
+        }
+
         /* ── Bottom Man-Page Footer ── */
         .man-footer {
             margin-top: 1rem;
@@ -517,7 +552,8 @@
                 line-height: 1.35;
             }
 
-            .contrib-entry {
+            .contrib-entry,
+            .webring-entry {
                 grid-column: 2;
             }
 
@@ -697,6 +733,7 @@
                         <button type="button" class="cmd-chip" data-cmd="cd notes">cd notes</button>
                         <button type="button" class="cmd-chip" data-cmd="cd contributions">cd contributions</button>
                         <button type="button" class="cmd-chip" data-cmd="cat github">cat github</button>
+                        <button type="button" class="cmd-chip" data-cmd="cat webring">cat webring</button>
                         <button type="button" class="cmd-chip" data-cmd="cat blogs">cat blogs</button>
                         <button type="button" class="cmd-chip" data-cmd="cat linux">cat linux</button>
                         <button type="button" class="cmd-chip" data-cmd="ls">ls</button>
@@ -726,7 +763,7 @@
                 <p>
                     i use gentoo and nvim btw
                 </p>
-                <p><small> a part of <a href="https://threadlocked.xyz/" style="color:#528a64;">threadlocked.xyz</a> </small></p>
+                <p><small> a part of <a href="https://threadlocked.xyz/" style="color:#528a64;" target="_blank" rel="noreferrer noopener">threadlocked.xyz</a> </small></p>
             </div>
         </section>
 
@@ -790,9 +827,23 @@
                         <span class="link-meta">x.com/shoobam84</span>
                     </li>
                     <li>
-                        <span class="tree-branch">└─</span>
+                        <span class="tree-branch">├─</span>
                         <a class="man-link" href="mailto:shubhamnayak392reborn@gmail.com">mail(1)</a>
                         <span class="link-meta">shubhamnayak392reborn@gmail.com</span>
+                    </li>
+                    <li>
+                        <span class="tree-branch">└─</span>
+                        <div class="webring-entry">
+                            <div class="webring-nav">
+                                <a class="man-link" href="https://ring.seggs.lol" target="_blank" rel="noreferrer noopener">webring(7)</a>
+                                <span class="link-meta">ring.seggs.lol // [<a class="man-link" href="https://ring.seggs.lol/redirect?from=shubham&dir=prev" title="Previous site in webring">prev</a>] [<a class="man-link" href="https://ring.seggs.lol/random" target="_blank" rel="noreferrer noopener" title="Random site in webring">random</a>] [<a class="man-link" href="https://ring.seggs.lol/redirect?from=shubham&dir=next" title="Next site in webring">next</a>]</span>
+                            </div>
+                            <div class="webring-badge">
+                                <a href="https://ring.seggs.lol" target="_blank" rel="noreferrer noopener" title="threadlocked webring">
+                                    <img src="./threadlocked_badge.png" alt="threadlocked webring badge" width="88" height="31">
+                                </a>
+                            </div>
+                        </div>
                     </li>
                 </ul>
             </div>
@@ -935,7 +986,9 @@
                 'see': { sectionId: 'see-also', headingId: 'heading-see-also', label: '~/see-also' },
                 'also': { sectionId: 'see-also', headingId: 'heading-see-also', label: '~/see-also' },
                 'links': { sectionId: 'see-also', headingId: 'heading-see-also', label: '~/see-also' },
-                'socials': { sectionId: 'see-also', headingId: 'heading-see-also', label: '~/see-also' }
+                'socials': { sectionId: 'see-also', headingId: 'heading-see-also', label: '~/see-also' },
+                'webring': { sectionId: 'see-also', headingId: 'heading-see-also', label: '~/see-also (webring)' },
+                'ring': { sectionId: 'see-also', headingId: 'heading-see-also', label: '~/see-also (webring)' }
             };
 
             function jumpAndHighlight(targetKey) {
@@ -998,7 +1051,9 @@
                 'mail': { url: 'mailto:shubhamnayak392reborn@gmail.com', label: 'shubhamnayak392reborn@gmail.com' },
                 'email': { url: 'mailto:shubhamnayak392reborn@gmail.com', label: 'shubhamnayak392reborn@gmail.com' },
                 'gmail': { url: 'mailto:shubhamnayak392reborn@gmail.com', label: 'shubhamnayak392reborn@gmail.com' },
-                'arpa': { url: 'http://shoobham84.6.2.8.0.6.3.0.0.0.7.4.0.1.0.0.2.ip6.arpa', label: 'shoobham84...ip6.arpa' }
+                'arpa': { url: 'http://shoobham84.6.2.8.0.6.3.0.0.0.7.4.0.1.0.0.2.ip6.arpa', label: 'shoobham84...ip6.arpa' },
+                'webring': { url: 'https://ring.seggs.lol', label: 'ring.seggs.lol (threadlocked webring)' },
+                'ring': { url: 'https://ring.seggs.lol', label: 'ring.seggs.lol (threadlocked webring)' }
             };
 
             function openCat(item) {
@@ -1025,7 +1080,7 @@
                 }
 
                 if (lower === 'ls see-also' || lower === 'ls seealso' || lower === 'ls links' || lower === 'ls ~/links') {
-                    cmdFeedback.textContent = 'github(1)  linkedin(1)  x(1)  mail(1)';
+                    cmdFeedback.textContent = 'github(1)  linkedin(1)  x(1)  mail(1)  webring(7)';
                     return;
                 }
 
@@ -1082,7 +1137,7 @@
                     }
 
                     if (normCat === 'seealso' || normCat === 'links' || normCat === 'socials') {
-                        cmdFeedback.innerHTML = 'see-also: <a href="https://github.com/shoobham84" target="_blank" rel="noreferrer noopener">github(1)</a> | <a href="https://www.linkedin.com/in/shubham-nayak-46bba7379/" target="_blank" rel="noreferrer noopener">linkedin(1)</a> | <a href="https://x.com/shoobam84" target="_blank" rel="noreferrer noopener">x(1)</a> | <a href="mailto:shubhamnayak392reborn@gmail.com">mail(1)</a>';
+                        cmdFeedback.innerHTML = 'see-also: <a href="https://github.com/shoobham84" target="_blank" rel="noreferrer noopener">github(1)</a> | <a href="https://www.linkedin.com/in/shubham-nayak-46bba7379/" target="_blank" rel="noreferrer noopener">linkedin(1)</a> | <a href="https://x.com/shoobam84" target="_blank" rel="noreferrer noopener">x(1)</a> | <a href="mailto:shubhamnayak392reborn@gmail.com">mail(1)</a> | <a href="https://ring.seggs.lol" target="_blank" rel="noreferrer noopener">webring(7)</a>';
                         return;
                     }
 
