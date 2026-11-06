@@ -77,7 +77,7 @@
             mask-image: radial-gradient(
                 circle var(--spot-radius) at var(--mx) var(--my),
                 rgba(0, 0, 0, 0.75) 0%,
-                rgba(0, 0, 0, 0.35) 45%,
+                rgba(0, 0, 0, 0.35) 65%,
                 rgba(0, 0, 0, 0.08) 75%,
                 transparent 100%
             );
@@ -98,8 +98,8 @@
             z-index: 0;
             background: radial-gradient(
                 circle var(--spot-radius) at var(--mx) var(--my),
-                rgba(82, 138, 100, 0.012) 0%,
-                rgba(82, 138, 100, 0.003) 50%,
+                rgba(82, 138, 100, 0.09) 0%,
+                rgba(82, 138, 100, 0.05) 50%,
                 transparent 100%
             );
         }
@@ -919,10 +919,139 @@
                 }
             }, { passive: true });
 
+            // ── Blocky UI Sound Engine (Web Audio API) ──
+            var SOUND_RECIPES = {
+                // Crisp dry wooden key switch click
+                click: [
+                    {
+                        startFreq: 230,
+                        endFreq: 95,
+                        durationMs: 26,
+                        delayMs: 0,
+                        gain: 0.22,
+                        waveform: 'triangle',
+                        filterCutoffHz: 750
+                    }
+                ],
+                // Warm 2-step upward hollow bamboo/wood "blop-plop"
+                plop: [
+                    {
+                        startFreq: 240,
+                        endFreq: 350,
+                        durationMs: 44,
+                        delayMs: 0,
+                        gain: 0.26,
+                        waveform: 'sine',
+                        filterCutoffHz: 820
+                    },
+                    {
+                        startFreq: 370,
+                        endFreq: 540,
+                        durationMs: 52,
+                        delayMs: 42,
+                        gain: 0.28,
+                        waveform: 'triangle',
+                        filterCutoffHz: 960
+                    }
+                ],
+                // Tactile "thock-pop" when opening a link
+                open: [
+                    {
+                        startFreq: 175,
+                        endFreq: 115,
+                        durationMs: 24,
+                        delayMs: 0,
+                        gain: 0.24,
+                        waveform: 'triangle',
+                        filterCutoffHz: 620
+                    },
+                    {
+                        startFreq: 290,
+                        endFreq: 460,
+                        durationMs: 46,
+                        delayMs: 22,
+                        gain: 0.25,
+                        waveform: 'sine',
+                        filterCutoffHz: 900
+                    }
+                ]
+            };
+
+            var sharedAudioCtx = null;
+
+            function getAudioContext() {
+                if (typeof window === 'undefined') return null;
+                var AudioCtx = window.AudioContext || window.webkitAudioContext;
+                if (!AudioCtx) return null;
+
+                if (!sharedAudioCtx) {
+                    sharedAudioCtx = new AudioCtx();
+                }
+                if (sharedAudioCtx.state === 'suspended') {
+                    sharedAudioCtx.resume().catch(function () {});
+                }
+                return sharedAudioCtx;
+            }
+
+            function playSound(type) {
+                var ctx = getAudioContext();
+                if (!ctx) return;
+
+                var steps = SOUND_RECIPES[type];
+                if (!steps) return;
+
+                var baseTime = ctx.currentTime;
+
+                for (var i = 0; i < steps.length; i++) {
+                    var step = steps[i];
+                    var startTime = baseTime + step.delayMs / 1000;
+                    var durationSec = step.durationMs / 1000;
+                    var stopTime = startTime + durationSec;
+
+                    var osc = ctx.createOscillator();
+                    var filter = ctx.createBiquadFilter();
+                    var gainNode = ctx.createGain();
+
+                    osc.type = step.waveform;
+                    osc.frequency.setValueAtTime(step.startFreq, startTime);
+                    osc.frequency.exponentialRampToValueAtTime(
+                        Math.max(20, step.endFreq),
+                        stopTime
+                    );
+
+                    filter.type = 'lowpass';
+                    filter.frequency.setValueAtTime(step.filterCutoffHz, startTime);
+                    filter.Q.setValueAtTime(1.2, startTime);
+
+                    gainNode.gain.setValueAtTime(0.001, startTime);
+                    gainNode.gain.linearRampToValueAtTime(step.gain, startTime + 0.003);
+                    gainNode.gain.exponentialRampToValueAtTime(0.0008, stopTime);
+
+                    osc.connect(filter);
+                    filter.connect(gainNode);
+                    gainNode.connect(ctx.destination);
+
+                    osc.start(startTime);
+                    osc.stop(stopTime + 0.005);
+                }
+            }
+
+            function unlockAudio() {
+                try {
+                    var ctx = getAudioContext();
+                    if (ctx && ctx.state === 'suspended') {
+                        ctx.resume().catch(function () {});
+                    }
+                } catch (e) {}
+            }
+            window.addEventListener('pointerdown', unlockAudio, { once: true, passive: true });
+            window.addEventListener('keydown', unlockAudio, { once: true, passive: true });
+
             // 3. Copy .arpa hostname button
             var copyBtn = document.getElementById('copy-arpa');
             var arpaHost = 'shoobham84.6.2.8.0.6.3.0.0.0.7.4.0.1.0.0.2.ip6.arpa';
             copyBtn.addEventListener('click', function () {
+                playSound('click');
                 if (navigator.clipboard && navigator.clipboard.writeText) {
                     navigator.clipboard.writeText(arpaHost).catch(function () {});
                 } else {
@@ -1011,6 +1140,7 @@
                 }, 3000);
 
                 cmdFeedback.textContent = '-> jumped to ' + info.label + ' (highlighted for 3s)';
+                playSound('plop');
                 return true;
             }
 
@@ -1061,6 +1191,7 @@
                     window.open(item.url, '_blank', 'noopener,noreferrer');
                 } catch (e) {}
                 cmdFeedback.innerHTML = '-> opened <a href="' + item.url + '" target="_blank" rel="noreferrer noopener">' + item.label + '</a> [new tab]';
+                playSound('open');
             }
 
             function runCommand(rawInput) {
@@ -1071,36 +1202,43 @@
 
                 if (lower === 'clear' || lower === 'cls') {
                     cmdFeedback.innerHTML = '';
+                    playSound('click');
                     return;
                 }
 
                 if (lower === 'ls' || lower === 'dir' || lower === 'tree') {
                     cmdFeedback.textContent = 'name  synopsis  description/  notes/  contributions/  see-also/';
+                    playSound('click');
                     return;
                 }
 
                 if (lower === 'ls see-also' || lower === 'ls seealso' || lower === 'ls links' || lower === 'ls ~/links') {
                     cmdFeedback.textContent = 'github(1)  linkedin(1)  x(1)  mail(1)  webring(7)';
+                    playSound('click');
                     return;
                 }
 
                 if (lower === 'ls notes' || lower === 'ls blogs' || lower === 'ls ~/notes' || lower === 'ls ~/work/blogs') {
                     cmdFeedback.textContent = 'rejs (Reverse Engineering Jane Street ASIC)';
+                    playSound('click');
                     return;
                 }
 
                 if (lower === 'ls contributions' || lower === 'ls projects' || lower === 'ls work' || lower === 'ls ~/work') {
                     cmdFeedback.textContent = 'gcc-cxx-lambda (GCC C++ frontend patch)  kernel-alsa-led (Linux Kernel ALSA Realtek driver LED patch)';
+                    playSound('click');
                     return;
                 }
 
                 if (lower === 'help' || lower === 'man' || lower === 'man shubham') {
                     cmdFeedback.textContent = 'usage: cd <description|notes|contributions|seealso> | cat <github|linkedin|x|notes|gcc|linux|alsa> | ls | clear';
+                    playSound('click');
                     return;
                 }
 
                 if (lower === 'arpa') {
                     cmdFeedback.textContent = arpaHost;
+                    playSound('click');
                     return;
                 }
 
@@ -1112,6 +1250,7 @@
                     catArg = lower.slice(4).trim();
                 } else if (lower === 'cat') {
                     cmdFeedback.textContent = 'cat: missing operand (try: cat github, cat blogs, cat linux, cat alsa)';
+                    playSound('click');
                     return;
                 } else if (lower.indexOf('open ') === 0) {
                     isCatCmd = true;
@@ -1124,6 +1263,7 @@
                 if (isCatCmd) {
                     if (!catArg) {
                         cmdFeedback.textContent = 'cat: missing operand (try: cat github, cat blogs, cat linux, cat alsa)';
+                        playSound('click');
                         return;
                     }
                     var cleanCat = catArg.replace(/^[~./]+|[\/]+$/g, '');
@@ -1133,11 +1273,13 @@
 
                     if (normCat === 'description' || normCat === 'about' || normCat === 'aboutme' || normCat === 'abouttxt' || normCat === 'readme') {
                         cmdFeedback.textContent = 'hi, im shubham, 2nd year @ mait | hpc, reverse engineering, silicon, kernel | gentoo & nvim btw :]';
+                        playSound('click');
                         return;
                     }
 
                     if (normCat === 'seealso' || normCat === 'links' || normCat === 'socials') {
                         cmdFeedback.innerHTML = 'see-also: <a href="https://github.com/shoobham84" target="_blank" rel="noreferrer noopener">github(1)</a> | <a href="https://www.linkedin.com/in/shubham-nayak-46bba7379/" target="_blank" rel="noreferrer noopener">linkedin(1)</a> | <a href="https://x.com/shoobam84" target="_blank" rel="noreferrer noopener">x(1)</a> | <a href="mailto:shubhamnayak392reborn@gmail.com">mail(1)</a> | <a href="https://ring.seggs.lol" target="_blank" rel="noreferrer noopener">webring(7)</a>';
+                        playSound('click');
                         return;
                     }
 
@@ -1148,6 +1290,7 @@
                     }
 
                     cmdFeedback.textContent = 'cat: ' + catArg + ': No such file or link (try: cat github, cat blogs, cat linux, cat alsa)';
+                    playSound('click');
                     return;
                 }
 
@@ -1166,6 +1309,7 @@
                 if (normalized === '' || normalized === '..') {
                     document.getElementById('top').scrollIntoView({ behavior: 'smooth' });
                     cmdFeedback.textContent = '-> ~';
+                    playSound('plop');
                     return;
                 }
 
@@ -1181,6 +1325,7 @@
                 }
 
                 cmdFeedback.textContent = 'cd: no such section: ' + dest + ' (try: cd notes, cd contributions, cd description, cd seealso, ls)';
+                playSound('click');
             }
 
             cmdForm.addEventListener('submit', function (e) {
@@ -1197,6 +1342,21 @@
                     runCommand(c);
                 });
             });
+
+            // Sound effects on interactive links
+            document.addEventListener('click', function (e) {
+                var el = e.target;
+                var link = el.closest && el.closest('a');
+                if (link && link.href) {
+                    playSound('open');
+                }
+            });
+
+            // Expose soundEngine for debugging or testing
+            window.soundEngine = {
+                playSound: playSound,
+                SOUND_RECIPES: SOUND_RECIPES
+            };
 
             console.log("Hail Naga!");
         })();
